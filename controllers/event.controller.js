@@ -105,7 +105,7 @@ module.exports.createEvent = async (ctx, next) => {
     ctx.status = 204;
   }
 };
-
+// ----------------------------------------------------------------
 // Mock event controller for unit testing dependency injection
 const EventsController = class {
   constructor(participationModel) {
@@ -119,15 +119,15 @@ const EventsController = class {
 
     if (body.userId && body.eventId && body.startTime) {
       // Create a new participation for a pre-existing event
-      let participation = await this.participationModel.create({
+      await this.participationModel.create({
         id: uuid(),
         UserId: body.userId,
         EventId: body.eventId,
         startTime: body.startTime,
       });
-      participation = participation.get({ plain: true });
+      //participation = participation.get({ plain: true });
 
-      ctx.body = { id: participation.EventId };
+      //ctx.body = { id: participation.EventId };
       ctx.status = 201;
     } else {
       ctx.status = 204;
