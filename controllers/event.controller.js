@@ -107,29 +107,31 @@ module.exports.createEvent = async (ctx, next) => {
 };
 
 // Mock event controller for unit testing dependency injection
-const EventsController = function(participationModel) {
-  this.Participation = participationModel;
-}
+const EventsController = class {
+  constructor(participationModel) {
+    this.participationModel = participationModel;
+  }
 
-EventsController.prototype.joinEvent = async (ctx, next) => {
-  if (ctx.method !== 'POST') return next();
+  async joinEvent (ctx, next) {
+    if (ctx.method !== 'POST') return next();
 
-  const { body } = ctx.request;
+    const { body } = ctx.request;
 
-  if (body.userId && body.eventId && body.startTime) {
-    // Create a new participation for a pre-existing event
-    let participation = await models.Participation.create({
-      id: uuid(),
-      UserId: body.userId,
-      EventId: body.eventId,
-      startTime: body.startTime,
-    });
-    participation = participation.get({ plain: true });
+    if (body.userId && body.eventId && body.startTime) {
+      // Create a new participation for a pre-existing event
+      let participation = await this.participationModel.create({
+        id: uuid(),
+        UserId: body.userId,
+        EventId: body.eventId,
+        startTime: body.startTime,
+      });
+      participation = participation.get({ plain: true });
 
-    ctx.body = { id: participation.EventId };
-    ctx.status = 201;
-  } else {
-    ctx.status = 204;
+      ctx.body = { id: participation.EventId };
+      ctx.status = 201;
+    } else {
+      ctx.status = 204;
+    }
   }
 }
 
