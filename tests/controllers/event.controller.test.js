@@ -23,9 +23,8 @@ describe('events', function () {
     describe('create event', function () {
 
         it('should return an object', async function () {
-            sinon.spy(Events, "createEvent");
-            await Events.createEvent(ctx);
-            ctx.body.should.be.an('object');
+            sinon.stub(Events, "createEvent").returns({id: "jeff"})
+            await expect(Events.createEvent(ctx)).to.be.an("object");
         })
 
         it('should have property active', function () {
@@ -59,10 +58,11 @@ describe('events', function () {
             }
         };
         const eventController = new EventsController(participationModelMock);
+
         it('should return an object on create', async function () {
             expect(await eventController.joinEvent(ctx).create()).to.be.an("object");
         })
-        it('should have an object property id with value create', function() {
+        it('should have an object property id with value create', async function() {
             expect(await eventController.joinEvent(ctx).create().to.have.property('id'));
         })
     })
